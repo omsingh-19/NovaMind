@@ -1,0 +1,11 @@
+# Network Architecture
+INPUT_DIM = 784
+HIDDEN_1 = 128
+HIDDEN_2 = 64
+OUTPUT_DIM = 10
+
+# Hyperparameters
+LEARNING_RATE = 0.1
+EPOCHS = 20
+BATCH_SIZE = 64
+SEED = 42
