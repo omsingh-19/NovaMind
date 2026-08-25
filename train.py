@@ -1,8 +1,6 @@
 import numpy as np
-from src.layers import Dense
-from src.activations import ReLU , Softmax
 from src.losses import CrossEntropyLoss
-from src.network import Network
+from src.network import MLP
 from src.utils import load_mnist , one_hot_encode
 from config import (
     BATCH_SIZE,
@@ -21,13 +19,8 @@ X_train, y_train, X_test, y_test = load_mnist()
 y_train_oh = one_hot_encode(y_train)
    
 N = X_train.shape[0]
-layers = [
-    Dense(INPUT_DIM,HIDDEN_1),ReLU(),
-    Dense(HIDDEN_1,HIDDEN_2),ReLU(),
-    Dense(HIDDEN_2,OUTPUT_DIM),Softmax()
-]
 
-model = Network(layers)
+model = MLP(INPUT_DIM,HIDDEN_1,HIDDEN_2,OUTPUT_DIM)
 criterion = CrossEntropyLoss()
 
 for epoch in range(EPOCHS):
@@ -58,3 +51,16 @@ for epoch in range(EPOCHS):
     print(
         f"Epoch [{epoch + 1:02d}/{EPOCHS:02d}] - Loss: {epoch_loss:.4f} - Accuracy: {epoch_acc:.2f}%"
     )
+
+# --- Save weights after training ---
+print('\n Training Completed. Saving Weights')
+weights_dict = {}
+idx=1
+for layer in model.layers:
+    if hasattr(layer,'W'):
+        weights_dict[f'W{idx}']=layer.W
+        weights_dict[f'b{idx}']=layer.b
+        idx+=1
+np.savez('model_weights.npz',**weights_dict)
+print('Weights saved successfully to model_weights.npz')
+
