@@ -1,5 +1,10 @@
 # NovaMind — Neural Network from Scratch
 
+![Python](https://img.shields.io/badge/Python-3.9+-blue?logo=python&logoColor=white)
+![Built with NumPy](https://img.shields.io/badge/Built%20with-NumPy%20Only-4c1)
+![Test Accuracy](https://img.shields.io/badge/Test%20Accuracy-97.91%25-4c1)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+
 A multi-layer perceptron built entirely in **NumPy** — no PyTorch, no TensorFlow, no autograd. Every forward pass, backward pass, and weight update is written by hand.
 
 Trained on MNIST (60k images). Achieves **97.91% test accuracy**.
