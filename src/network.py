@@ -18,10 +18,10 @@ class Network:
             grad = layer.backward(grad)
         return grad
 
-    def update(self,lr):
+    def update(self,lr,lambda_=0):
         for layer in self.layers:
             if hasattr(layer,'W'):
-                layer.W -= lr*layer.dW
+                layer.W -= lr*(layer.dW + lambda_ * layer.W)
                 layer.b -= lr*layer.db
 
 class MLP(Network):
