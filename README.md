@@ -131,3 +131,6 @@ python visualize.py
 **Biases are not L2 regularized.** Regularizing biases provides no benefit and can hurt convergence. Only weights are penalized.
 
 **Weight saving is fully dynamic.** The training loop finds Dense layers using `hasattr(layer, 'W')` rather than hardcoding layer indices, so the architecture can be changed without breaking the save/load logic.
+
+## Interactive Demo (Stardance)
+the docs/ folder contains a browser-based interactive demo built for the Hack Club Stardance submission, that it was AI-generated and is not part of the core project, and that the actual project is the NumPy neural network in src/.
