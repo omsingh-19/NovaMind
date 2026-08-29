@@ -33,12 +33,6 @@ Layer sizes:   784 → 128 → 64 → 10
 | Learning rate | 0.1 |
 | L2 lambda | 0.0001 |
 
-## Visualizations
-
-![Training Curves](plots/training_curves.png)
-![Confusion Matrix](plots/confusion_matrix.png)
-![Prediction Grid](plots/prediction_grid.png)
-
 ## How to run
 
 ```bash
