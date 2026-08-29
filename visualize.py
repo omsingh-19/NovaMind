@@ -22,7 +22,6 @@ def plot_training_curves(history_file, final_test_acc):
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
-    # Loss plot
     ax1.plot(epochs, loss, 'b-', label='Training Loss')
     ax1.set_title('Training Loss per Epoch')
     ax1.set_xlabel('Epoch')
@@ -30,7 +29,6 @@ def plot_training_curves(history_file, final_test_acc):
     ax1.grid(True)
     ax1.legend()
 
-    # Accuracy plot
     ax2.plot(epochs, train_acc, 'g-', label='Training Accuracy')
     ax2.axhline(y=final_test_acc, color='r', linestyle='--', label=f'Final Test Acc: {final_test_acc:.2f}%')
     ax2.set_title('Accuracy per Epoch')
@@ -59,7 +57,6 @@ def plot_confusion_matrix(y_true, y_pred):
     plt.xlabel('Predicted Label')
     plt.ylabel('True Label')
 
-    # Annotate cells with counts
     thresh = cm.max() / 2.
     for i in range(10):
         for j in range(10):
@@ -80,7 +77,6 @@ def plot_prediction_grid(X_test, y_true, y_pred):
     selected_wrong = np.random.choice(wrong_idx, size=10, replace=False)
     selected_correct = np.random.choice(correct_idx, size=30, replace=False)
     
-    # Combine wrong and correct indices
     selected_idx = np.concatenate([selected_wrong, selected_correct])
     
     fig, axes = plt.subplots(5, 8, figsize=(12, 8))
@@ -94,10 +90,8 @@ def plot_prediction_grid(X_test, y_true, y_pred):
         ax.imshow(img, cmap='gray')
         
         if i < 10:
-            # First 10 are wrong predictions
             ax.set_title(f"pred:{y_pred[idx]} real:{y_true[idx]}", color='red', fontsize=10)
         else:
-            # Remaining 30 are correct predictions
             ax.set_title(f"{y_pred[idx]}", color='green', fontsize=10)
             
         ax.axis('off')

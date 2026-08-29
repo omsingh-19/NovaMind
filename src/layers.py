@@ -10,20 +10,13 @@ class Dense:
         self.db = None
 
     def forward(self,X:np.ndarray)-> np.ndarray:
-        """Computes z = X @ W + b
 
-        - Cache input X for backward pass
-        - Return the linear combination z
-        """
         self.X = X
         z = X@self.W +self.b
         return z
 
     def backward(self,d_out:np.ndarray)-> np.ndarray:
-        """Computes dW, db, and d_input given incoming d_out (dL/dz)
 
-        d_out shape: (batch_size, output_dim)
-        """
         self.dW = self.X.T @ d_out
         self.db = d_out.sum(keepdims=True,axis=0)
         d_input = d_out @ self.W.T

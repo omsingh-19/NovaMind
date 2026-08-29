@@ -23,14 +23,12 @@ def download_mnist(data_dir):
 def read_images(filepath):
     with gzip.open(filepath, 'rb') as f:
         data = f.read()
-    # offset=16 skips the 4 header fields (4 bytes each)
     images = np.frombuffer(data, dtype=np.uint8, offset=16)
-    return images.reshape(-1, 784)   # flatten 28x28 → 784 (dense layers don't need 2D)
+    return images.reshape(-1, 784) 
 
 def read_labels(filepath):
     with gzip.open(filepath, 'rb') as f:
         data = f.read()
-    # offset=8 skips magic number + count (2 header fields)
     return np.frombuffer(data, dtype=np.uint8, offset=8)
 
 def normalize(X):

@@ -1,136 +1,57 @@
-# NovaMind — Neural Network from Scratch
+# NovaMind
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue?logo=python&logoColor=white)
-![Built with NumPy](https://img.shields.io/badge/Built%20with-NumPy%20Only-4c1)
-![Test Accuracy](https://img.shields.io/badge/Test%20Accuracy-97.91%25-4c1)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
+A neural network built from scratch using only NumPy. No PyTorch, no TensorFlow, no autograd — every forward pass, backward pass, and weight update is written by hand.
 
-A multi-layer perceptron built entirely in **NumPy** — no PyTorch, no TensorFlow, no autograd. Every forward pass, backward pass, and weight update is written by hand.
-
-Trained on MNIST (60k images). Achieves **97.91% test accuracy**.
+Trained on MNIST. Gets 97.91% test accuracy.
 
 ---
 
-## Results
+## What I implemented
 
-| Metric | Value |
-|---|---|
-| Train Accuracy | 99.69% |
-| Test Accuracy | 97.91% |
-| Overfitting Gap | 1.78% |
-| Epochs | 20 |
-| Optimizer | Mini-batch SGD + L2 Regularization |
-
----
+- Dense layers with forward and backward pass
+- ReLU and Softmax activations
+- Cross-entropy loss
+- Mini-batch SGD with L2 regularization
+- Xavier weight initialization
+- MNIST data pipeline — downloads and parses the IDX binary format, normalizes, one-hot encodes
 
 ## Architecture
 
 ```
-Input (784)
-    ↓
-Dense (784 → 128) + ReLU
-    ↓
-Dense (128 → 64) + ReLU
-    ↓
-Dense (64 → 10) + Softmax
-    ↓
-Output (10 classes)
+Input (784) → Dense → ReLU → Dense → ReLU → Dense → Softmax → Output (10)
+Layer sizes:   784 → 128 → 64 → 10
 ```
 
-Weights initialized with **Xavier initialization**: `W = randn * sqrt(1 / input_dim)`
+## Results
 
----
-
-## What's Built from Scratch
-
-- **Forward pass** — matrix multiplication, bias addition, activation functions
-- **Backpropagation** — full chain rule implementation through every layer
-- **ReLU** — forward `max(0, z)` and backward `d_out * (input > 0)`
-- **Softmax** — numerically stable implementation with combined Softmax + CrossEntropy gradient `(predictions - y_true) / batch_size`
-- **CrossEntropy Loss** — `- mean(sum(y_true * log(clip(pred)), axis=1))`
-- **Mini-batch SGD** — shuffles data every epoch, processes in batches of 64
-- **L2 Regularization** — weight decay term `λ * W` added to gradient during update; biases not regularized
-- **Xavier Initialization** — prevents vanishing/exploding gradients at initialization
-- **MNIST data pipeline** — downloads, parses IDX binary format, normalizes, one-hot encodes
-
----
+| | |
+|---|---|
+| Train accuracy | 99.69% |
+| Test accuracy | 97.91% |
+| Epochs | 20 |
+| Batch size | 64 |
+| Learning rate | 0.1 |
+| L2 lambda | 0.0001 |
 
 ## Visualizations
 
-### Training Curves
 ![Training Curves](plots/training_curves.png)
-
-### Confusion Matrix
 ![Confusion Matrix](plots/confusion_matrix.png)
-
-### Prediction Grid
 ![Prediction Grid](plots/prediction_grid.png)
----
 
-## Project Structure
+## How to run
 
-```
-novamind/
-├── src/
-│   ├── activations.py      # ReLU, Softmax
-│   ├── layers.py           # Dense layer (forward + backward)
-│   ├── losses.py           # CrossEntropyLoss
-│   ├── network.py          # Network base class + MLP
-│   └── utils.py            # MNIST downloader, parser, normalizer
-├── config.py               # Hyperparameters
-├── train.py                # Training loop
-├── evaluate.py             # Test accuracy on saved weights
-├── visualize.py            # Loss curves, confusion matrix, prediction grid
-└── plots/                  # Generated visualizations
-```
-
----
-
-## How to Run
-
-**Install dependencies:**
 ```bash
 pip install numpy matplotlib
+python train.py      # trains and saves weights
+python evaluate.py   # prints test accuracy
+python visualize.py  # generates plots
 ```
 
-**Train:**
-```bash
-python train.py
-```
+## One thing worth noting
 
-**Evaluate:**
-```bash
-python evaluate.py
-```
+The Softmax and CrossEntropy backward passes are combined. The gradient simplifies to `(predictions - y_true) / batch_size`, so CrossEntropyLoss has no backward method — Softmax handles it entirely. This only becomes obvious when you write the math yourself.
 
-**Generate visualizations:**
-```bash
-python visualize.py
-```
+## Interactive Demo
 
----
-
-## Hyperparameters
-
-| Parameter | Value |
-|---|---|
-| Learning Rate | 0.1 |
-| Batch Size | 64 |
-| Epochs | 20 |
-| L2 Lambda | 0.0001 |
-| Hidden Layer 1 | 128 |
-| Hidden Layer 2 | 64 |
-| Random Seed | 42 |
-
----
-
-## Key Design Decisions
-
-**Softmax handles the backward pass for CrossEntropy.** The combined gradient of Softmax + CrossEntropy simplifies to `(predictions - y_true) / batch_size`, so `CrossEntropyLoss` has no `backward` method — Softmax absorbs it entirely.
-
-**Biases are not L2 regularized.** Regularizing biases provides no benefit and can hurt convergence. Only weights are penalized.
-
-**Weight saving is fully dynamic.** The training loop finds Dense layers using `hasattr(layer, 'W')` rather than hardcoding layer indices, so the architecture can be changed without breaking the save/load logic.
-
-## Interactive Demo (Stardance)
-the docs/ folder contains a browser-based interactive demo built for the Hack Club Stardance submission, that it was AI-generated and is not part of the core project, and that the actual project is the NumPy neural network in src/.
+The `docs/` folder has a browser demo (draw a digit, model predicts it) built for Hack Club Stardance. It was AI-generated and is not part of the core project. The trained weights are exported to JSON and the forward pass runs in JavaScript.
