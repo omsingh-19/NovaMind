@@ -4,18 +4,16 @@
     <title>NovaMind MNIST Digit Recognizer</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
     <style>
-        /* 1. Global & Background */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #E6D5C3; /* Warm Sand */
-            color: #2B1D14; /* Espresso */
+            background-color: #E6D5C3; 
+            color: #2B1D14; 
             margin: 0;
             padding: 40px 20px;
             display: flex;
             justify-content: center;
         }
 
-        /* Bento Box Grid Wrapper */
         .bento-wrapper {
             width: 100%;
             max-width: 800px;
@@ -24,7 +22,6 @@
             gap: 20px;
         }
 
-        /* 2. Base Card Style (Thick borders, slight radius) */
         .bento-card {
             border: 3px solid #2B1D14;
             border-radius: 8px;
@@ -32,18 +29,16 @@
             box-sizing: border-box;
         }
 
-        /* 3. Color Themes */
         .card-light {
-            background-color: #F6F0E6; /* Soft Cream */
+            background-color: #F6F0E6; 
             color: #2B1D14;
         }
 
         .card-dark {
-            background-color: #4A372A; /* Chocolate Brown */
-            color: #F6F0E6; /* Cream Text */
+            background-color: #4A372A; 
+            color: #F6F0E6; 
         }
 
-        /* 4. Layout Sections */
         .header-card {
             display: flex;
             justify-content: space-between;
@@ -70,7 +65,6 @@
             gap: 20px;
         }
 
-        /* 5. Canvas Styling */
         .canvas-container {
             display: flex;
             flex-direction: column;
@@ -84,7 +78,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* The canvas itself must remain black for the MNIST logic to work */
         canvas { 
             cursor: crosshair; 
             border: 3px solid #2B1D14; 
@@ -92,7 +85,6 @@
             background-color: #000000;
         }
 
-        /* 6. Result & Controls */
         .result-card {
             flex-grow: 1;
             display: flex;
@@ -113,9 +105,8 @@
             justify-content: center;
         }
 
-        /* 7. Buttons */
         button { 
-            background-color: #6A4E3B; /* Muted Mocha */
+            background-color: #6A4E3B; 
             color: #FFFFFF; 
             border: 3px solid #2B1D14; 
             border-radius: 6px; 
@@ -129,14 +120,13 @@
         }
 
         button:hover { 
-            background-color: #7d5e48; /* Slightly lighter mocha */
+            background-color: #7d5e48; 
         }
         
         button:active {
             transform: translateY(2px);
         }
 
-        /* Responsive */
         @media (max-width: 650px) {
             .main-grid {
                 grid-template-columns: 1fr;
@@ -147,22 +137,18 @@
 <body>
 
     <div class="bento-wrapper">
-        <!-- Top Header -->
         <header class="bento-card card-light header-card">
             <h1>NovaMind</h1>
             <strong>NUMPY ONLY</strong>
         </header>
 
-        <!-- Main Body Grid -->
         <div class="main-grid">
             
-            <!-- Left Column: Canvas -->
             <div class="bento-card card-dark canvas-container">
                 <p>DRAW A DIGIT (0-9)</p>
                 <canvas id="drawCanvas" width="280" height="280"></canvas>
             </div>
 
-            <!-- Right Column: Stacked Results & Controls -->
             <div class="right-column">
                 
                 <div class="bento-card card-light result-card">
@@ -178,23 +164,19 @@
         </div>
     </div>
 
-    <!-- Hidden 28x28 canvas for resizing -->
     <canvas id="resizeCanvas" width="28" height="28" style="display:none;"></canvas>
 
     <script>
         let weights = null;
 
-        // 1. Load the weights on page load
         fetch('weights.json')
             .then(response => response.json())
             .then(data => { weights = data; console.log("Weights loaded!"); })
             .catch(err => console.error("Error loading weights:", err));
 
-        // 2. Setup Drawing Canvas
         const canvas = document.getElementById('drawCanvas');
         const ctx = canvas.getContext('2d');
         
-        // Fill with black (matches MNIST)
         function clearCanvas() {
             ctx.fillStyle = 'black';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -203,12 +185,14 @@
         clearCanvas();
 
         let drawing = false;
-        ctx.lineWidth = 25; // Thick stroke for better accuracy
+        ctx.lineWidth = 25; 
         ctx.lineCap = 'round';
-        ctx.strokeStyle = 'white'; // White ink (matches MNIST)
+        ctx.strokeStyle = 'white'; 
 
         canvas.onmousedown = (e) => { drawing = true; ctx.beginPath(); };
-        canvas.onmouseup = () => { drawing = false; };
+        window.onmouseup = () => { drawing = false; };
+        canvas.onmouseleave = () => { drawing = false; };
+        
         canvas.onmousemove = (e) => {
             if (!drawing) return;
             const rect = canvas.getBoundingClientRect();
@@ -216,7 +200,6 @@
             ctx.stroke();
         };
 
-        // 3. Math Functions for the Neural Network
         function matMul(X, W) {
             let result = new Array(W[0].length).fill(0);
             for (let i = 0; i < X.length; i++) {
@@ -246,14 +229,12 @@
             return arr.indexOf(Math.max(...arr));
         }
 
-        // 4. Predict Function (With MNIST-style Centering)
         function predict() {
             if (!weights) {
                 alert("Weights are still loading!");
                 return;
             }
 
-            // Find the bounding box of the drawing to crop out empty space
             const imgDataRaw = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
             let minX = canvas.width, minY = canvas.height, maxX = -1, maxY = -1;
             let isEmpty = true;
@@ -261,7 +242,7 @@
             for (let y = 0; y < canvas.height; y++) {
                 for (let x = 0; x < canvas.width; x++) {
                     const i = (y * canvas.width + x) * 4;
-                    if (imgDataRaw[i] > 0) { // If pixel is not black
+                    if (imgDataRaw[i] > 0) { 
                         isEmpty = false;
                         if (x < minX) minX = x;
                         if (x > maxX) maxX = x;
@@ -276,7 +257,6 @@
                 return;
             }
 
-            // Calculate scaling to fit MNIST standard
             const boxWidth = Math.max(1, maxX - minX);
             const boxHeight = Math.max(1, maxY - minY);
             const scale = 20.0 / Math.max(boxWidth, boxHeight);
@@ -304,7 +284,6 @@
                 input.push(imgData[i] / 255.0); 
             }
 
-            // Forward Pass
             let z1 = addBias(matMul(input, weights.W1), weights.b1);
             let a1 = relu(z1);
             
